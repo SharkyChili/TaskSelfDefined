@@ -1,5 +1,7 @@
 package com.dfjx.diy.queue;
 
+import com.dfjx.diy.conf.SysConf;
+
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -99,25 +101,7 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         notEmpty.signal();
     }
 
-    /**
-     * Extracts element at current take position, advances, and signals.
-     * Call only when holding lock.
-     */
-    private E dequeue() {
-        // assert lock.getHoldCount() == 1;
-        // assert items[takeIndex] != null;
-        final Object[] items = this.items;
-        @SuppressWarnings("unchecked")
-        E x = (E) items[takeIndex];
-        items[takeIndex] = null;
-        if (++takeIndex == items.length)
-            takeIndex = 0;
-        count--;
-        if (itrs != null)
-            itrs.elementDequeued();
-        notFull.signal();
-        return x;
-    }
+
 
     /**
      * Deletes item at array index removeIndex.
@@ -329,17 +313,7 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         }
     }
 
-    public E take() throws InterruptedException {
-        final ReentrantLock lock = this.lock;
-        lock.lockInterruptibly();
-        try {
-            while (count == 0)
-                notEmpty.await();
-            return dequeue();
-        } finally {
-            lock.unlock();
-        }
-    }
+
 
     public E poll(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
@@ -1375,5 +1349,98 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         }
     }
 
+    /**
+     * Extracts element at current take position, advances, and signals.
+     * Call only when holding lock.
+     */
+    private E dequeue() {
+        // assert lock.getHoldCount() == 1;
+        // assert items[takeIndex] != null;
+        final Object[] items = this.items;
+        @SuppressWarnings("unchecked")
+        E x = (E) items[takeIndex];
+        items[takeIndex] = null;
+        if (++takeIndex == items.length)
+            takeIndex = 0;
+        count--;
+        if (itrs != null)
+            itrs.elementDequeued();
+        notFull.signal();
+        return x;
+    }
 
+    public E take() throws InterruptedException {
+        final ReentrantLock lock = this.lock;
+        lock.lockInterruptibly();
+        try {
+            while (count == 0)
+                notEmpty.await();
+            return dequeue();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+
+
+    public Object[] getAll() throws InterruptedException {
+        final ReentrantLock lock = this.lock;
+        lock.lockInterruptibly();
+        try{
+            while (count == 0){
+                notEmpty.await();
+            }
+            return dequeueAll();
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * java.util.concurrent.CopyOnWriteArrayList#set(int, java.lang.Object)
+     * @return
+     */
+    private Object[] dequeueAll() {
+        //复制到一个新数组
+        int count = this.count;//getAll中有count！=0
+        final Object[] elements = this.items;
+        int length = elements.length;
+        Object[] newElements = new Object[count];
+        int takeIndex = this.takeIndex;
+        int putIndex = this.putIndex;
+        if(putIndex > takeIndex){
+            System.arraycopy(elements,takeIndex,newElements,0,count);
+        }else {
+            System.arraycopy(elements,takeIndex,newElements,0,length - takeIndex);
+            System.arraycopy(elements,0,newElements,length - takeIndex,putIndex + 1);
+        }
+        clearAllUnlock();
+
+//        notFull.signal();
+        notFull.signalAll();
+        return newElements;
+    }
+
+    /**
+     * com.dfjx.diy.queue.TakeAllQueue.clear
+     */
+    private void clearAllUnlock(){
+        int k = count;
+        if (k > 0) {
+            final int putIndex = this.putIndex;
+            int i = takeIndex;
+            do {
+                items[i] = null;
+                if (++i == items.length)
+                    i = 0;
+            } while (i != putIndex);
+            takeIndex = putIndex;
+            count = 0;
+            if (itrs != null)
+                itrs.queueIsEmpty();
+            //这里不太想得通为什么要唤醒count次，即使我count=10，但是有100个线程在等待呢？ signalAll()不是更好吗？
+//            for (; k > 0 && lock.hasWaiters(notFull); k--)
+//                notFull.signal();
+        }
+    }
 }
