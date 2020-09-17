@@ -1,5 +1,6 @@
 package com.dfjx.diy.sync;
 
+import com.dfjx.diy.conf.Conf;
 import com.dfjx.diy.sync.reader.ReaderTask;
 import com.dfjx.diy.sync.writer.WriterTask;
 
