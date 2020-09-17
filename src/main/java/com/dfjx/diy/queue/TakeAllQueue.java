@@ -1383,7 +1383,7 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
 
 
 
-    public Object[] getAll() throws InterruptedException {
+    public Object[] takeAll() throws InterruptedException {
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try{
@@ -1442,5 +1442,31 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
 //            for (; k > 0 && lock.hasWaiters(notFull); k--)
 //                notFull.signal();
         }
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        TakeAllQueue<Integer> queue = new TakeAllQueue<>(5);
+
+        queue.put(1);
+        queue.put(2);
+        queue.put(3);
+        System.out.println(queue.takeIndex);
+        System.out.println(queue.putIndex);
+        System.out.println(queue.takeAll());
+        queue.put(4);
+        queue.put(5);
+        queue.put(6);
+        queue.put(7);
+        System.out.println(queue.takeIndex);
+        System.out.println(queue.putIndex);
+        System.out.println(queue.takeAll());
+        queue.put(8);
+        queue.put(9);
+        queue.put(10);
+        System.out.println(queue.takeIndex);
+        System.out.println(queue.putIndex);
+        System.out.println(queue.takeAll());
+
     }
 }
