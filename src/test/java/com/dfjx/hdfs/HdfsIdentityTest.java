@@ -1,9 +1,6 @@
 package com.dfjx.hdfs;
 
-import com.ucar.datalink.domain.media.parameter.hdfs.HDFSMediaSrcParameter;
-import com.ucar.datalink.domain.plugin.writer.hdfs.HdfsWriterParameter;
-import com.ucar.datalink.writer.hdfs.handle.config.HdfsConfig;
-import com.ucar.datalink.writer.hdfs.handle.stream.FileSystemManager;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.hdfs.DistributedFileSystem;

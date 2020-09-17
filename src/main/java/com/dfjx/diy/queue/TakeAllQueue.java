@@ -1412,7 +1412,7 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
             System.arraycopy(elements,takeIndex,newElements,0,count);
         }else {
             System.arraycopy(elements,takeIndex,newElements,0,length - takeIndex);
-            System.arraycopy(elements,0,newElements,length - takeIndex,putIndex + 1);
+            System.arraycopy(elements,0,newElements,length - takeIndex, putIndex);
         }
         clearAllUnlock();
 
@@ -1453,20 +1453,20 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         queue.put(3);
         System.out.println(queue.takeIndex);
         System.out.println(queue.putIndex);
-        System.out.println(queue.takeAll());
+        System.out.println(Arrays.toString(queue.takeAll()));
         queue.put(4);
         queue.put(5);
         queue.put(6);
         queue.put(7);
         System.out.println(queue.takeIndex);
         System.out.println(queue.putIndex);
-        System.out.println(queue.takeAll());
+        System.out.println(Arrays.toString(queue.takeAll()));
         queue.put(8);
         queue.put(9);
         queue.put(10);
         System.out.println(queue.takeIndex);
         System.out.println(queue.putIndex);
-        System.out.println(queue.takeAll());
+        System.out.println(Arrays.toString(queue.takeAll()));
 
     }
 }
