@@ -3,18 +3,30 @@ package com.dfjx.diy.conf;
 import com.dfjx.diy.param.reader.ReaderParam;
 import com.dfjx.diy.param.writer.WriterParam;
 
-public class MergedConf implements Conf{
+public class MergedConf extends Conf{
 
-    public ReaderParam readerParam;
 
-    public WriterParam writerParam;
 
 
     public static MergedConf merge(XmlConf xmlConf, SysConf sysConf){
         MergedConf mergedConf = new MergedConf();
 
-        //todo
+        ReaderParam xmlReaderParam = xmlConf.getReaderParam();
+        xmlReaderParam.overWrite(sysConf.getReaderParam());
+        mergedConf.setReaderParam(xmlReaderParam);
+
+        WriterParam xmlWriterParam = xmlConf.getWriterParam();
+        xmlWriterParam.overWrite(sysConf.getWriterParam());
+        mergedConf.setWriterParam(xmlWriterParam);
+
         //优先sysConf,覆盖掉xmlConf
         return mergedConf;
     }
+
+
+
+
+
+
+
 }

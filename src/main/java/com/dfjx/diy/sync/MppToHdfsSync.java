@@ -33,4 +33,5 @@ public class MppToHdfsSync extends AbstractSync {
         new Thread(this.readerTask).start();
         new Thread(this.writerTask).start();
     }
+
 }
