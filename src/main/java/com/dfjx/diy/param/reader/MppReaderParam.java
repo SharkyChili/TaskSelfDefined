@@ -2,7 +2,9 @@ package com.dfjx.diy.param.reader;
 
 import com.dfjx.diy.param.Param;
 
-public class MppReaderParam implements ReaderParam {
+import java.lang.reflect.Field;
+
+public class MppReaderParam extends ReaderParam {
 
     String driver = "org.postgresql.Driver";
     //        String url = "jdbc:postgresql://localhost:5432/pgsqltest";
@@ -12,7 +14,12 @@ public class MppReaderParam implements ReaderParam {
 
 
 
-    public void overWrite(Param param) {
-        MppReaderParam param1 = (MppReaderParam) param;
-    }
+
+//    public static void main(String[] args) {
+//        MppReaderParam mppReaderParam = new MppReaderParam();
+//        mppReaderParam.setUsername("wayne");
+//        Param param = mppReaderParam;
+//        Field[] declaredFields = param.getClass().getDeclaredFields();
+//        System.out.println("a");
+//    }
 }
