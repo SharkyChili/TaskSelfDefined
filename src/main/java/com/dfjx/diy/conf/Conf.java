@@ -3,6 +3,9 @@ package com.dfjx.diy.conf;
 import com.dfjx.diy.param.reader.ReaderParam;
 import com.dfjx.diy.param.writer.WriterParam;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Conf {
 
     public ReaderParam readerParam;
@@ -24,4 +27,10 @@ public class Conf {
     public void setWriterParam(WriterParam writerParam) {
         this.writerParam = writerParam;
     }
+
+
+    String sourceType = "";
+    Map<String, String> sourceAttrMap = new HashMap<>();
+    String targetType = "";
+    Map<String, String> targetAttrMap = new HashMap<>();
 }

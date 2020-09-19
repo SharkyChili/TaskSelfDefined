@@ -6,6 +6,10 @@ import java.lang.reflect.Field;
 
 public class MppReaderParam extends ReaderParam {
 
+    public String getWorkerClass(){
+        return "com.dfjx.diy.sync.reader.MppReaderTask";
+    }
+
     String driver = "org.postgresql.Driver";
     //        String url = "jdbc:postgresql://localhost:5432/pgsqltest";
     String url = "jdbc:postgresql://10.1.3.40:7300/wayne";

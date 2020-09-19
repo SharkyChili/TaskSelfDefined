@@ -19,10 +19,7 @@ import java.util.Map;
 
 public class XmlConf extends Conf{
 
-    private String sourceType = "";
-    private Map<String, String> sourceAttrMap = new HashMap<>();
-    private String targetType = "";
-    private Map<String, String> targetAttrMap = new HashMap<>();
+
 
     public static XmlConf create(){
         return new XmlConf();

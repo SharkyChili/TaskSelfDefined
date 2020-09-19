@@ -1,10 +1,11 @@
 package com.dfjx.diy.param;
 
-import com.dfjx.diy.param.reader.MppReaderParam;
 
 import java.lang.reflect.Field;
 
 public abstract class Param {
+    public abstract String getWorkerClass();
+
     public void overWrite(Param param) {
         try {
             Field[] declaredFields = param.getClass().getDeclaredFields();
