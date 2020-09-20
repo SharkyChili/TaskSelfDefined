@@ -8,6 +8,7 @@ import com.dfjx.diy.param.Type;
 import com.dfjx.diy.param.reader.ReaderParam;
 import com.dfjx.diy.param.writer.WriterParam;
 import com.dfjx.diy.sync.DataSyncInterface;
+import com.dfjx.diy.sync.Sync;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -37,20 +38,18 @@ public class DataSync {
     }
 
     private void doWork() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        //实例化工作类
-//        DataSync dataSync = new DataSync();
-//        String classFromXml = dataSync.getClassFromXml();
-//        Class<?> aClass = Class.forName(classFromXml);
-//        DataSyncInterface dataSyncInterface = (DataSyncInterface) aClass.newInstance();
+
 
         //读取配置
         XmlConf xmlConf = XmlConf.create().buildConfFromXml("conf.xml");
         //todo 这里暂时不写
         SysConf sysConf = getAttributeFromSys();
-        MergedConf Conf = MergedConf.merge(xmlConf, sysConf);
+        MergedConf conf = MergedConf.merge(xmlConf, sysConf);
 
-//        dataSyncInterface.init(Conf);
-//        dataSyncInterface.start();
+        Sync sync = new Sync();
+        sync.init(conf);
+        sync.start();
+
     }
 
 

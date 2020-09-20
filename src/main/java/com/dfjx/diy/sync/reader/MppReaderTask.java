@@ -30,6 +30,14 @@ public class MppReaderTask extends ReaderTask{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        //todo
+        while(){
+            queue.put(new Object());
+        }
+
+        //结束之后中断写线程
+        interruptWriter();
     }
 
 

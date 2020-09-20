@@ -1,8 +1,15 @@
 package com.dfjx.diy.sync.writer;
 
+
 public class HdfsWriterTask extends WriterTask {
+
     @Override
-    public void run() {
+    void consume(Object object) {
+        //do nothing
+    }
+
+    @Override
+    void consumeBatch(Object[] objects) {
 
     }
 }

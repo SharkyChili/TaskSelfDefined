@@ -11,10 +11,13 @@ public abstract class Task implements Runnable {
 
     public BlockingQueue<Object> queue;
 
+    public Sync sync;
+
     public final AtomicBoolean stopped = new AtomicBoolean(false);
 
-    public  void init(Param param, BlockingQueue<Object> queue){
+    public  void init(Param param, BlockingQueue<Object> queue, Sync sync){
         this.param = param;
         this.queue = queue;
+        this.sync = sync;
     };
 }
