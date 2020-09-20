@@ -12,6 +12,10 @@ public abstract class ReaderTask extends Task {
 
     public volatile boolean isRunning = true;
 
+    public void stop(){
+        isRunning = false;
+    }
+
     public void interruptWriter(){
         this.sync.writerThread.interrupt();
     }
@@ -21,52 +25,43 @@ public abstract class ReaderTask extends Task {
     abstract Object[] produceBatch();
 
     public void run(){
-        while(isRunning || !this.sync.readerThread.isInterrupted()) {
+        //正常流程，走到produce为空时，自动结束
+        //中断流程
+        //被中断，就应该停止生产，并通知writer结束
+        while(isRunning) {
             if(queue instanceof ProduceOne){
                 try {
                     Object object = produce();
                     if(object==null){
-                        //正常结束
+                        //正常结束，用于结束线程
                         isRunning = false;
                     } else {
                         ((ProduceOne)queue).put(object);
                     }
                 } catch (InterruptedException e) {
                     //clear interrupt flag
-                    //reset flag
-                    resetFLag();
+                    //被中断，就该停止生产
+                    isRunning = false;
                 }
             }else if(queue instanceof ProduceBatch){
                 try {
                     Object[] objects = produceBatch();
                     if(objects==null) {
-                        //正常结束
+                        //正常结束，用于结束线程
                         isRunning = false;
                     } else {
                         ((ProduceBatch)queue).putAll(objects);
                     }
                 } catch (InterruptedException e) {
                     //clear interrupt flag
-                    //reset flag
-                    resetFLag();
+                    //被中断，就该停止生产
+                    isRunning = false;
                 }
             }else {
                 throw new RuntimeException(" queue type error, please implement ProduceOne or ProduceBatch");
             }
         }
+        //通知writer结束
+        interruptWriter();
     }
-
-
-    //仅为重设flag
-    //本类中使用
-    private void resetFLag(){
-        endOrKill();
-    }
-
-    //被终止时使用
-    //子类中，调用
-    public void endOrKill(){
-        this.sync.readerThread.interrupt();
-    }
-
 }

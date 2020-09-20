@@ -15,8 +15,9 @@ import java.util.concurrent.BlockingQueue;
 public class Sync {
     public BlockingQueue<Object> queue;
 
-//    public ReaderTask readerTask;
-//    public WriterTask writerTask;
+    public ReaderTask readerTask;
+    public WriterTask writerTask;
+
     public Thread readerThread;
     public Thread writerThread;
 
@@ -31,8 +32,8 @@ public class Sync {
 
         this.queue = determineQueue(conf);
 
-        ReaderTask readerTask;
-        WriterTask writerTask;
+//        ReaderTask readerTask;
+//        WriterTask writerTask;
         try {
             String readerClassName = readerParam.getWorkerClass();
             Class<?> readerClass = Class.forName(readerClassName);
@@ -57,9 +58,14 @@ public class Sync {
         this.writerThread.start();
     }
 
+    public void stop(){
+        this.readerTask.stop();
+    }
+
     private BlockingQueue<Object> determineQueue(Conf conf){
         if(conf.getReaderParam().getClass().getSimpleName().contains("Mpp")
         && conf.getWriterParam().getClass().getSimpleName().contains("Hdfs")){
+            //非公平锁，这样才有one--batch的意义
             return new TakeAllQueue<Object>(100);
         }
         return new LinkedBlockingSonQueue<Object>(100);

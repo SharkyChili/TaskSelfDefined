@@ -7,6 +7,16 @@ import java.sql.*;
 public class MppReaderTask extends ReaderTask{
 
 
+    @Override
+    Object produce() {
+        return null;
+    }
+
+    @Override
+    Object[] produceBatch() {
+        //不用
+        return new Object[0];
+    }
 
     public void run() {
         Connection conn = getConn();
@@ -30,14 +40,6 @@ public class MppReaderTask extends ReaderTask{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        //todo
-        while(){
-            queue.put(new Object());
-        }
-
-        //结束之后中断写线程
-        interruptWriter();
     }
 
 
