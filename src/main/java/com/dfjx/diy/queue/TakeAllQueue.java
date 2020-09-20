@@ -17,7 +17,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date 2020.09.16
  */
 public class TakeAllQueue<E> extends AbstractQueue<E>
-        implements BlockingQueue<E>, java.io.Serializable {
+        implements BlockingQueue<E>, java.io.Serializable,
+                    ProduceOne<E>, ConsumeBatch<E>{
     /**
      * Serialization ID. This class relies on default serialization
      * even for the items array, which is default-serialized, even if
@@ -673,6 +674,8 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
     public Iterator<E> iterator() {
         return new Itr();
     }
+
+
 
     /**
      * Shared data between iterators and their queue, allowing queue
