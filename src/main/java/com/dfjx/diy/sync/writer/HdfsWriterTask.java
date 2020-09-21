@@ -10,7 +10,7 @@ public class HdfsWriterTask extends WriterTask {
 
     @Override
     void consumeBatch(Object[] objects) {
-
+        //todo 需要完成
     }
 
 
