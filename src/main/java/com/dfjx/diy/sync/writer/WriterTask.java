@@ -15,7 +15,7 @@ public abstract class WriterTask extends Task {
         while(!this.sync.writerThread.isInterrupted() || queue.size() != 0){
             if(queue instanceof ConsumeOne){
                 try {
-                    Object object = ((ConsumeOne)queue).take();
+                    Object object = ((ConsumeOne)queue).takeOne();
                     consume(object);
                 } catch (InterruptedException e) {
                     //clear interrupt flag

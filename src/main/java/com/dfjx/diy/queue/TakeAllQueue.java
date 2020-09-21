@@ -1384,6 +1384,10 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         }
     }
 
+    public void putOne(E e) throws InterruptedException {
+        put(e);
+    }
+
 
 
     public Object[] takeAll() throws InterruptedException {

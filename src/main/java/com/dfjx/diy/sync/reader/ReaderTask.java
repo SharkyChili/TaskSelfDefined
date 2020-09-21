@@ -36,7 +36,7 @@ public abstract class ReaderTask extends Task {
                         //正常结束，用于结束线程
                         isRunning = false;
                     } else {
-                        ((ProduceOne)queue).put(object);
+                        ((ProduceOne)queue).putOne(object);
                     }
                 } catch (InterruptedException e) {
                     //clear interrupt flag

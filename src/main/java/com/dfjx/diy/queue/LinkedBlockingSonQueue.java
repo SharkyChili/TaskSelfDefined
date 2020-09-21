@@ -13,4 +13,12 @@ public class LinkedBlockingSonQueue<E> extends LinkedBlockingQueue<E>
     public LinkedBlockingSonQueue(int capacity) {
         super(capacity);
     }
+
+    public E takeOne() throws InterruptedException {
+        return take();
+    }
+
+    public void putOne(E e) throws InterruptedException {
+        put(e);
+    }
 }
