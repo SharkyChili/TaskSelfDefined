@@ -16,7 +16,7 @@ public class MppReaderParam extends ReaderParam {
     String username = "wayne";
     String password = "wayne";*/
 
-    public String driver;// = "org.postgresql.Driver";
+    public String driver= "org.postgresql.Driver";
     //        String url = "jdbc:postgresql://localhost:5432/pgsqltest";
     public String url;// = "jdbc:postgresql://10.1.3.40:7300/wayne";
     public String username;// = "wayne";

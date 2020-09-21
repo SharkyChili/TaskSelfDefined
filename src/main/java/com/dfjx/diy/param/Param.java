@@ -7,6 +7,7 @@ public abstract class Param {
     public abstract String getWorkerClass();
 
     public void overWrite(Param param) {
+        if(param == null){return;}
         try {
             Field[] declaredFields = param.getClass().getDeclaredFields();
             for (Field field : declaredFields) {

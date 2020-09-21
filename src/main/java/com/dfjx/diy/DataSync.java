@@ -31,42 +31,20 @@ public class DataSync {
     public static void main(String[] args) {
         DataSync dataSync = new DataSync();
         try {
-            dataSync.doWork();
+            dataSync.doWork(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void doWork() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-
-
+    public void doWork(Map<String, String> params) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         //读取配置
         XmlConf xmlConf = XmlConf.create().buildConfFromXml("conf.xml");
-        //todo 这里暂时不写
-        SysConf sysConf = getAttributeFromSys();
+        SysConf sysConf = SysConf.create().buildConfFromSysParams(params);
         MergedConf conf = MergedConf.merge(xmlConf, sysConf);
 
         Sync sync = new Sync();
         sync.init(conf);
         sync.start();
-
     }
-
-
-    private String getClassFromXml() {
-        return "";
-
-    }
-
-
-
-
-
-
-
-
-    private SysConf getAttributeFromSys() {
-        return new SysConf();
-    }
-
 }

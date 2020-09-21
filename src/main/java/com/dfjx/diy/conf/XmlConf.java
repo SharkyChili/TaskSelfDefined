@@ -105,47 +105,6 @@ public class XmlConf extends Conf{
     }
 
 
-    private Param buildParam(String sType, Map<String, String> attrMap, Type type) {
-        //利用反射找到类，然后填充属性
-        if (sType == null || "".equals(sType)) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder(sType.length());
-        sb.append("com.dfjx.diy.param.");
-        sb.append(type.getType().toLowerCase());
-        sb.append(".");
 
-        for (int i = 0; i < sType.length(); i++) {
-            sb.append(i == 0 ? Character.toUpperCase(sType.charAt(i)) : sType.charAt(i));
-        }
-        sb.append(type.getType());
-        sb.append("Param");
-
-        Class<?> aClass;
-        Param param = null;
-        try {
-            aClass = Class.forName(sb.toString());
-            param = (Param) aClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            for (Map.Entry<String, String> entry : attrMap.entrySet()) {
-                Field field = param.getClass().getDeclaredField(entry.getKey());
-                field.setAccessible(true);
-                field.set(param, entry.getValue());
-            }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return param;
-    }
 
 }
