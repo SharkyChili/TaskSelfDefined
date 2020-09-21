@@ -99,7 +99,11 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         if (++putIndex == items.length)
             putIndex = 0;
         count++;
-        notEmpty.signal();
+        //提升效率，只在放满时触发takeAll()
+        //takeAll()还在生产者生产完时触发
+        if(count == this.items.length){
+            notEmpty.signal();
+        }
     }
 
 
