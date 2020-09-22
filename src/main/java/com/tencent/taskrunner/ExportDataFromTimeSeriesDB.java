@@ -341,7 +341,9 @@ public class ExportDataFromTimeSeriesDB {
         JSONObject data = (JSONObject) object.get("hits");
         JSONArray jsonArray = data.getJSONArray("hits");
         List<FieldsModel> result = JSON.parseArray(jsonArray.toJSONString(), FieldsModel.class);
-        
+        //以这里做分界
+
+
         if(result!=null  && result.size() > 0){
         	fileNum = 1;
         	filePath = ExportDataFromTimeSeriesDB.createCtsdbDataFile(dataInput, fileNum,batchId);
