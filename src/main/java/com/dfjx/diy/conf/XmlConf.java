@@ -4,6 +4,7 @@ import com.dfjx.diy.param.Param;
 import com.dfjx.diy.param.Type;
 import com.dfjx.diy.param.reader.ReaderParam;
 import com.dfjx.diy.param.writer.WriterParam;
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -12,7 +13,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,11 +49,11 @@ public class XmlConf extends Conf{
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        String path = this.getClass().getClassLoader().getResource("")
-                .getPath() + xmlPath;
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(xmlPath);
         Document document = null;
         try {
-            document = db.parse(path);
+            document = db.parse(inputStream);
+            System.out.println("xml读入成功");
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -104,6 +107,12 @@ public class XmlConf extends Conf{
         }
     }
 
+
+    public static void main(String[] args) {
+        XmlConf.create().buildConfFromXml("conf.xml");
+
+
+    }
 
 
 
