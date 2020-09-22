@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -95,7 +96,7 @@ public class HdfsWriterTask extends WriterTask {
     @Override
     void consumeBatch(Object[] objects) {
         //这里需要适配MppHdfsHandler来转换类型，暂时不适配,写死
-        List<JSONObject> jsonObjectList = null;
+        List<JSONObject> jsonObjectList = new ArrayList<>();
         for (Object object : objects) {
             jsonObjectList.add((JSONObject)object);
         }
