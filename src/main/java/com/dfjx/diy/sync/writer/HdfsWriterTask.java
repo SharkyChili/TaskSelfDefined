@@ -44,7 +44,7 @@ public class HdfsWriterTask extends WriterTask {
 //            uri = new URI("hdfs://172.19.1.14:8020");
             uri = new URI(hdfsWriterParam.url);
         } catch (URISyntaxException e) {
-            System.out.println("uri exception");
+            System.out.println("HdfsWriterTask uri exception");
             e.printStackTrace();
         }
 
@@ -69,8 +69,10 @@ public class HdfsWriterTask extends WriterTask {
 
             System.out.println("hdfs consume: syncDataToHdfsForCtsdb success");
         } catch (IOException e) {
+            System.out.println("HdfsWriterTask IOException");
             throw new RuntimeException(e);
         }catch (Exception e){
+            System.out.println("HdfsWriterTask Exception");
             throw new RuntimeException(e);
         }
 
@@ -79,8 +81,10 @@ public class HdfsWriterTask extends WriterTask {
         try {
             fs = FileSystem.get(uri, conf);  // 我改的
         } catch (IOException e) {
+            System.out.println("HdfsWriterTask FileSystem IOException");
             e.printStackTrace();
         }
+        System.out.println("hdfs 初始化成功");
     };
 
     @Override
@@ -107,6 +111,7 @@ public class HdfsWriterTask extends WriterTask {
             syncDataToHdfsForCtsdb(dataFile, dataFile,
                     uri,conf);
         } catch (Exception e) {
+            System.out.println("hdfs syncDataToHdfsForCtsdb Exception "+e);
             e.printStackTrace();
         }
     }
@@ -130,6 +135,7 @@ public class HdfsWriterTask extends WriterTask {
                 order.incrementAndGet();
             }
         } catch (Exception e) {
+            System.out.println("hdfs createDataFile Exception:"+e.getMessage());
             e.printStackTrace();
         }
         return filePath;
@@ -148,6 +154,7 @@ public class HdfsWriterTask extends WriterTask {
                 w.println(jsonObject.toJSONString());
             }
         } catch (Exception e) {
+            System.out.println("hdfs printDataToDisk Exception: "+ e.getMessage());
             e.printStackTrace();
         }finally{
             if(w!=null){
@@ -157,6 +164,7 @@ public class HdfsWriterTask extends WriterTask {
                 try {
                     out.close();
                 } catch (IOException e) {
+                    System.out.println("hdfs printDataToDisk IOException: "+ e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -211,6 +219,7 @@ public class HdfsWriterTask extends WriterTask {
         try {
             fs.close();
         } catch (IOException e) {
+            System.out.println("hdfs close Exception:" + e.getMessage());
             e.printStackTrace();
         }
     }
