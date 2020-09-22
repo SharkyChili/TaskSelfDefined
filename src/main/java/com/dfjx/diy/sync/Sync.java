@@ -49,10 +49,10 @@ public class Sync {
         }
 
         readerTask.init(readerParam,queue,this);
-        this.readerThread = new Thread(readerTask);
+        this.readerThread = new Thread(readerTask,"reader");
 
         writerTask.init(writerParam,queue,this);
-        this.writerThread = new Thread(writerTask);
+        this.writerThread = new Thread(writerTask,"writer");
     }
 
     public void start(){

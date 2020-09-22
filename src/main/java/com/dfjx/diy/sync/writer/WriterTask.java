@@ -22,7 +22,7 @@ public abstract class WriterTask extends Task {
 //                    consume(object);
                 } catch (InterruptedException e) {
                     //clear interrupt flag
-                    System.out.println("writer 被中断，需优雅退出");
+                    System.out.println(Thread.currentThread().getName() + " : " + "writer 被中断，需优雅退出");
                 }
                 if(object!=null){
                     consume(object);
@@ -34,13 +34,13 @@ public abstract class WriterTask extends Task {
 //                    consumeBatch(objects);
                 } catch (InterruptedException e) {
                     //clear interrupt flag
-                    System.out.println("writer 被中断，需优雅退出");
+                    System.out.println(Thread.currentThread().getName() + " : " + "writer 被中断，需优雅退出");
                 }
                 if(objects != null && objects.length!=0){
                     consumeBatch(objects);
                 }
             }else {
-                throw new RuntimeException(" queue type error, please implement ConsumeOne or ConsumeBatch");
+                throw new RuntimeException(Thread.currentThread().getName() + " : " + " queue type error, please implement ConsumeOne or ConsumeBatch");
             }
         }
         //writer真正结束

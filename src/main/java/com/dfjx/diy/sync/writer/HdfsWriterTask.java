@@ -45,7 +45,7 @@ public class HdfsWriterTask extends WriterTask {
 //            uri = new URI("hdfs://172.19.1.14:8020");
             uri = new URI(hdfsWriterParam.url);
         } catch (URISyntaxException e) {
-            System.out.println("HdfsWriterTask uri exception");
+            System.out.println(Thread.currentThread().getName() + " : " + "HdfsWriterTask uri exception");
             e.printStackTrace();
         }
 
@@ -68,12 +68,12 @@ public class HdfsWriterTask extends WriterTask {
         try {
             UserGroupInformation.loginUserFromSubject(null);
 
-            System.out.println("hdfs consume: conf success");
+            System.out.println(Thread.currentThread().getName() + " : " + "hdfs consume: conf success");
         } catch (IOException e) {
-            System.out.println("HdfsWriterTask IOException");
+            System.out.println(Thread.currentThread().getName() + " : " + "HdfsWriterTask IOException");
             throw new RuntimeException(e);
         }catch (Exception e){
-            System.out.println("HdfsWriterTask Exception");
+            System.out.println(Thread.currentThread().getName() + " : " + "HdfsWriterTask Exception");
             throw new RuntimeException(e);
         }
 
@@ -82,10 +82,10 @@ public class HdfsWriterTask extends WriterTask {
         try {
             fs = FileSystem.get(uri, conf);  // 我改的
         } catch (IOException e) {
-            System.out.println("HdfsWriterTask FileSystem IOException");
+            System.out.println(Thread.currentThread().getName() + " : " + "HdfsWriterTask FileSystem IOException");
             e.printStackTrace();
         }
-        System.out.println("hdfs 初始化成功");
+        System.out.println(Thread.currentThread().getName() + " : " + "hdfs 初始化成功");
     };
 
     @Override
@@ -104,15 +104,15 @@ public class HdfsWriterTask extends WriterTask {
 
         String path = hdfsWriterParam.path;
         String dataFile = createDataFile(path);
-        System.out.println("hdfs consume: createDataFile:dataFile :"+dataFile);
+        System.out.println(Thread.currentThread().getName() + " : " + "hdfs consume: createDataFile:dataFile :"+dataFile);
         printDataToDisk(jsonObjectList,dataFile);
-        System.out.println("hdfs consume: printDataToDisk success");
+        System.out.println(Thread.currentThread().getName() + " : " + "hdfs consume: printDataToDisk success");
 
         try {
             syncDataToHdfsForCtsdb(dataFile, dataFile,
                     uri,conf);
         } catch (Exception e) {
-            System.out.println("hdfs syncDataToHdfsForCtsdb Exception "+e);
+            System.out.println(Thread.currentThread().getName() + " : " + "hdfs syncDataToHdfsForCtsdb Exception "+e);
             e.printStackTrace();
         }
     }
@@ -136,7 +136,7 @@ public class HdfsWriterTask extends WriterTask {
                 order.incrementAndGet();
             }
         } catch (Exception e) {
-            System.out.println("hdfs createDataFile Exception:"+e.getMessage());
+            System.out.println(Thread.currentThread().getName() + " : " + "hdfs createDataFile Exception:"+e.getMessage());
             e.printStackTrace();
         }
         return filePath;
@@ -155,7 +155,7 @@ public class HdfsWriterTask extends WriterTask {
                 w.println(jsonObject.toJSONString());
             }
         } catch (Exception e) {
-            System.out.println("hdfs printDataToDisk Exception: "+ e.getMessage());
+            System.out.println(Thread.currentThread().getName() + " : " + "hdfs printDataToDisk Exception: "+ e.getMessage());
             e.printStackTrace();
         }finally{
             if(w!=null){
@@ -165,7 +165,7 @@ public class HdfsWriterTask extends WriterTask {
                 try {
                     out.close();
                 } catch (IOException e) {
-                    System.out.println("hdfs printDataToDisk IOException: "+ e.getMessage());
+                    System.out.println(Thread.currentThread().getName() + " : " + "hdfs printDataToDisk IOException: "+ e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -208,20 +208,20 @@ public class HdfsWriterTask extends WriterTask {
             // 要上传到hdfs的目标路径
             Path dst = new Path(hdfsOutput);
             fs.copyFromLocalFile(src, dst);
-            System.out.println("hdfs 写入成功");
+            System.out.println(Thread.currentThread().getName() + " : " + "hdfs 写入成功");
         } catch (Exception e){
-            System.out.println("------------------------------数据文件上传到hdfs异常！");
+            System.out.println(Thread.currentThread().getName() + " : " + "------------------------------数据文件上传到hdfs异常！");
             e.printStackTrace();
             throw new Exception(e);
         }
     }
 
     public void close(){
-        System.out.println("hdfs writer 结束");
+        System.out.println(Thread.currentThread().getName() + " : " + "hdfs writer 结束");
         try {
             fs.close();
         } catch (IOException e) {
-            System.out.println("hdfs close Exception:" + e.getMessage());
+            System.out.println(Thread.currentThread().getName() + " : " + "hdfs close Exception:" + e.getMessage());
             e.printStackTrace();
         }
     }

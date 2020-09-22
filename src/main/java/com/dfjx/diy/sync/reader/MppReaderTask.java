@@ -34,7 +34,7 @@ public class MppReaderTask extends ReaderTask{
         try {
             Class.forName(driver); // classLoader,加载对应驱动
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("mpp获取连接成功");
+            System.out.println(Thread.currentThread().getName() + " : " + "mpp获取连接成功");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -46,7 +46,7 @@ public class MppReaderTask extends ReaderTask{
         try {
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
-            System.out.println("mpp执行语句，拿到rs成功");
+            System.out.println(Thread.currentThread().getName() + " : " + "mpp执行语句，拿到rs成功");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,15 +64,15 @@ public class MppReaderTask extends ReaderTask{
                     Object col = rs.getObject(i);
                     jsonObject.put(key,col);
                 }
-                System.out.println("mpp produce:" + jsonObject.toJSONString());
+                System.out.println(Thread.currentThread().getName() + " : " + "mpp produce:" + jsonObject.toJSONString());
                 return jsonObject;
             }
 
-            System.out.println("mpp produce: 无更多数据，结束");
+            System.out.println(Thread.currentThread().getName() + " : " + "mpp produce: 无更多数据，结束");
             return null;
 
         } catch (SQLException e) {
-            System.out.println("mpp produce: 异常："+e.getMessage());
+            System.out.println(Thread.currentThread().getName() + " : " + "mpp produce: 异常："+e.getMessage());
             throw new RuntimeException(e);
         }
     }

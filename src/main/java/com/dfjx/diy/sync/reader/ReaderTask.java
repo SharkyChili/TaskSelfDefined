@@ -25,7 +25,7 @@ public abstract class ReaderTask extends Task {
                     if(object==null){
                         //正常结束，用于结束线程
                         this.sync.isRunning.set(false);
-                        System.out.println("reader正常结束");
+                        System.out.println(Thread.currentThread().getName() + " : " + "reader正常结束");
                     } else {
                         ((ProduceOne)queue).putOne(object);
                     }
@@ -33,7 +33,7 @@ public abstract class ReaderTask extends Task {
                     //clear interrupt flag
                     //被中断，就该停止生产
                     this.sync.isRunning.set(false);
-                    System.out.println("reader中断结束");
+                    System.out.println(Thread.currentThread().getName() + " : " + "reader中断结束");
                 }
             }else if(queue instanceof ProduceBatch){
                 try {
@@ -41,7 +41,7 @@ public abstract class ReaderTask extends Task {
                     if(objects==null) {
                         //正常结束，用于结束线程
                         this.sync.isRunning.set(false);
-                        System.out.println("reader正常结束");
+                        System.out.println(Thread.currentThread().getName() + " : " + "reader正常结束");
                     } else {
                         ((ProduceBatch)queue).putAll(objects);
                     }
@@ -49,10 +49,10 @@ public abstract class ReaderTask extends Task {
                     //clear interrupt flag
                     //被中断，就该停止生产
                     this.sync.isRunning.set(false);
-                    System.out.println("reader中断结束");
+                    System.out.println(Thread.currentThread().getName() + " : " + "reader中断结束");
                 }
             }else {
-                throw new RuntimeException(" queue type error, please implement ProduceOne or ProduceBatch");
+                throw new RuntimeException(Thread.currentThread().getName() + " : " + " queue type error, please implement ProduceOne or ProduceBatch");
             }
         }
         //reader结束
