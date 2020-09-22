@@ -208,6 +208,7 @@ public class HdfsWriterTask extends WriterTask {
             // 要上传到hdfs的目标路径
             Path dst = new Path(hdfsOutput);
             fs.copyFromLocalFile(src, dst);
+            System.out.println("hdfs 写入成功");
         } catch (Exception e){
             System.out.println("------------------------------数据文件上传到hdfs异常！");
             e.printStackTrace();
