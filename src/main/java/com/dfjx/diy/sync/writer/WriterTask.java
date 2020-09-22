@@ -20,6 +20,7 @@ public abstract class WriterTask extends Task {
                 } catch (InterruptedException e) {
                     //clear interrupt flag
                     //reset flag
+                    System.out.println("writer 被中断，需优雅退出");
                     this.sync.writerThread.interrupt();
                 }
             }else if(queue instanceof ConsumeBatch){
@@ -29,12 +30,15 @@ public abstract class WriterTask extends Task {
                 } catch (InterruptedException e) {
                     //clear interrupt flag
                     //reset flag
+                    System.out.println("writer 被中断，需优雅退出");
                     this.sync.writerThread.interrupt();
                 }
             }else {
                 throw new RuntimeException(" queue type error, please implement ConsumeOne or ConsumeBatch");
             }
         }
+        //writer真正结束
+        close();
     }
 
     abstract void consume(Object object);

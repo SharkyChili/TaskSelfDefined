@@ -28,10 +28,59 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HdfsWriterTask extends WriterTask {
     String time;
     final AtomicInteger order = new AtomicInteger(0);
+    Configuration conf;
+    URI uri;
+    FileSystem fs = null;
 
     public  void init(Param param, BlockingQueue<Object> queue, Sync sync){
         super.init(param,queue,sync);
         time = String.valueOf(System.currentTimeMillis());
+
+        HdfsWriterParam hdfsWriterParam = (HdfsWriterParam) this.param;
+
+        try {
+//            uri = new URI("hdfs://172.19.1.14:9000");
+//            uri = new URI("hdfs://172.19.1.49:8020");
+//            uri = new URI("hdfs://172.19.1.14:8020");
+            uri = new URI(hdfsWriterParam.url);
+        } catch (URISyntaxException e) {
+            System.out.println("uri exception");
+            e.printStackTrace();
+        }
+
+        conf = new Configuration();
+//      conf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
+//      conf.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
+        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+
+//        conf.set("hadoop.security.authentication","tbds");
+//        conf.set("hadoop_security_authentication_tbds_secureid","0Hr0is06in4hxBu2V6vU0DAMFw7BT50pC4V5");
+//        conf.set("hadoop_security_authentication_tbds_username","wayne");
+//        conf.set("hadoop_security_authentication_tbds_securekey","ItWu35remPNQFYhe4Szr58Id2PVbg7cM");
+        conf.set("hadoop.security.authentication","tbds");
+        conf.set("hadoop_security_authentication_tbds_secureid",hdfsWriterParam.secureid);
+        conf.set("hadoop_security_authentication_tbds_username",hdfsWriterParam.username);
+        conf.set("hadoop_security_authentication_tbds_securekey",hdfsWriterParam.securekey);
+
+        //kerberos
+        UserGroupInformation.setConfiguration(conf);
+        try {
+            UserGroupInformation.loginUserFromSubject(null);
+
+            System.out.println("hdfs consume: syncDataToHdfsForCtsdb success");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        //拿到一个文件系统操作的客户端实例对象
+//            fs = FileSystem.get(conf) ;   //demo
+        try {
+            fs = FileSystem.get(uri, conf);  // 我改的
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     };
 
     @Override
@@ -54,42 +103,11 @@ public class HdfsWriterTask extends WriterTask {
         printDataToDisk(jsonObjectList,dataFile);
         System.out.println("hdfs consume: printDataToDisk success");
 
-        URI uri = null;
         try {
-//            uri = new URI("hdfs://172.19.1.14:9000");
-//            uri = new URI("hdfs://172.19.1.49:8020");
-//            uri = new URI("hdfs://172.19.1.14:8020");
-            uri = new URI(hdfsWriterParam.url);
-        } catch (URISyntaxException e) {
-            System.out.println("uri exception");
-            e.printStackTrace();
-        }
-
-        Configuration conf = new Configuration();
-//      conf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
-//      conf.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
-        conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-
-//        conf.set("hadoop.security.authentication","tbds");
-//        conf.set("hadoop_security_authentication_tbds_secureid","0Hr0is06in4hxBu2V6vU0DAMFw7BT50pC4V5");
-//        conf.set("hadoop_security_authentication_tbds_username","wayne");
-//        conf.set("hadoop_security_authentication_tbds_securekey","ItWu35remPNQFYhe4Szr58Id2PVbg7cM");
-        conf.set("hadoop.security.authentication","tbds");
-        conf.set("hadoop_security_authentication_tbds_secureid",hdfsWriterParam.secureid);
-        conf.set("hadoop_security_authentication_tbds_username",hdfsWriterParam.username);
-        conf.set("hadoop_security_authentication_tbds_securekey",hdfsWriterParam.securekey);
-
-        //kerberos
-        UserGroupInformation.setConfiguration(conf);
-        try {
-            UserGroupInformation.loginUserFromSubject(null);
             syncDataToHdfsForCtsdb(dataFile, dataFile,
                     uri,conf);
-            System.out.println("hdfs consume: syncDataToHdfsForCtsdb success");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }catch (Exception e){
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -153,11 +171,11 @@ public class HdfsWriterTask extends WriterTask {
      * @param conf
      * @throws Exception
      */
-    public static void syncDataToHdfsForCtsdb(String hdfsOutput, String dataInput,
+    public void syncDataToHdfsForCtsdb(String hdfsOutput, String dataInput,
                                               URI uri,
                                               Configuration conf) throws Exception{
 
-        FileSystem fs = null ;
+
         try {
 //            Configuration conf = new Configuration();
 //            conf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
@@ -175,10 +193,6 @@ public class HdfsWriterTask extends WriterTask {
 //                UserGroupInformation.setConfiguration(conf);
 //                UserGroupInformation.loginUserFromSubject(null);
 //            }
-            //拿到一个文件系统操作的客户端实例对象
-//            fs = FileSystem.get(conf) ;   //demo
-            fs = FileSystem.get(uri, conf);  // 我改的
-
 
             Path src = new Path(new File(dataInput).getPath());
             // 要上传到hdfs的目标路径
@@ -190,6 +204,14 @@ public class HdfsWriterTask extends WriterTask {
             System.out.println("------------------------------数据文件上传到hdfs异常！");
             e.printStackTrace();
             throw new Exception(e);
+        }
+    }
+
+    public void close(){
+        try {
+            fs.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

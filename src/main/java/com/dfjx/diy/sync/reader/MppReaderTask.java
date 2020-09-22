@@ -66,11 +66,11 @@ public class MppReaderTask extends ReaderTask{
                 }
                 System.out.println("mpp produce:" + jsonObject.toJSONString());
                 return jsonObject;
-            }else {
-                System.out.println("mpp produce: 无更多数据，结束");
-                close();
-                return null;
             }
+
+            System.out.println("mpp produce: 无更多数据，结束");
+            return null;
+
         } catch (SQLException e) {
             System.out.println("mpp produce: 异常："+e.getMessage());
             throw new RuntimeException(e);
@@ -83,7 +83,7 @@ public class MppReaderTask extends ReaderTask{
         return new Object[0];
     }
 
-    void close(){
+    public void close(){
         try {
             if(rs!=null){ rs.close(); }
         } catch (SQLException e) {

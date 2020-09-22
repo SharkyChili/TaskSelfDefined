@@ -20,4 +20,6 @@ public abstract class Task implements Runnable {
         this.queue = queue;
         this.sync = sync;
     };
+
+    public abstract void close();
 }
