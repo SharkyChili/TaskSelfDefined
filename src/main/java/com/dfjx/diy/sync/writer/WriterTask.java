@@ -5,33 +5,39 @@ import com.dfjx.diy.queue.ConsumeBatch;
 import com.dfjx.diy.queue.ConsumeOne;
 import com.dfjx.diy.sync.Task;
 
+import java.util.concurrent.TimeUnit;
+
 public abstract class WriterTask extends Task {
     @Override
     public void run() {
-        //未被中断 && 大小不为0   true || true 正常情况
-        //被中断   && 大小不为0   false|| true 此时为reader通知结束或者系统强行结束，需要优雅退出的话，就重新设置flag进入循环
-        //未被中断 && 大小为0     true || false 阻塞，等待被中断进入第四种状态
-        //被中断 && 大小为0       false || false 跳出循环，结束
-        while(!this.sync.writerThread.isInterrupted() || queue.size() != 0){
+        //未结束 && 大小不为0   true || true 正常情况
+        //结束   && 大小不为0   false|| true 此时为reader通知结束或者系统强行结束，需要优雅退出的话，就重新进入循环（补充：消费让queue结束才能结束循环）
+        //未结束 && 大小为0     true || false 阻塞，等待reader读取数据
+        //结束 && 大小为0       false || false 跳出循环，结束
+        while(this.sync.isRunning.get() || queue.size() != 0){
             if(queue instanceof ConsumeOne){
+                Object object = null;
                 try {
-                    Object object = ((ConsumeOne)queue).takeOne();
-                    consume(object);
+                    object = ((ConsumeOne)queue).takeOne(1, TimeUnit.SECONDS);
+//                    consume(object);
                 } catch (InterruptedException e) {
                     //clear interrupt flag
-                    //reset flag
                     System.out.println("writer 被中断，需优雅退出");
-                    this.sync.writerThread.interrupt();
+                }
+                if(object!=null){
+                    consume(object);
                 }
             }else if(queue instanceof ConsumeBatch){
+                Object[] objects = new Object[0];
                 try {
-                    Object[] objects = ((ConsumeBatch) queue).takeAll();
-                    consumeBatch(objects);
+                    objects = ((ConsumeBatch) queue).takeAll(1, TimeUnit.SECONDS);
+//                    consumeBatch(objects);
                 } catch (InterruptedException e) {
                     //clear interrupt flag
-                    //reset flag
                     System.out.println("writer 被中断，需优雅退出");
-                    this.sync.writerThread.interrupt();
+                }
+                if(objects != null && objects.length!=0){
+                    consumeBatch(objects);
                 }
             }else {
                 throw new RuntimeException(" queue type error, please implement ConsumeOne or ConsumeBatch");

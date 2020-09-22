@@ -184,7 +184,7 @@ public class HdfsWriterTask extends WriterTask {
                                               Configuration conf) throws Exception{
 
 
-        try {
+
 //            Configuration conf = new Configuration();
 //            conf.addResource(new Path("/etc/hadoop/conf/core-site.xml"));
 //            conf.addResource(new Path("/etc/hadoop/conf/hdfs-site.xml"));
@@ -202,12 +202,11 @@ public class HdfsWriterTask extends WriterTask {
 //                UserGroupInformation.loginUserFromSubject(null);
 //            }
 
+        try {
             Path src = new Path(new File(dataInput).getPath());
             // 要上传到hdfs的目标路径
             Path dst = new Path(hdfsOutput);
             fs.copyFromLocalFile(src, dst);
-
-            fs.close();
         } catch (Exception e){
             System.out.println("------------------------------数据文件上传到hdfs异常！");
             e.printStackTrace();
@@ -216,6 +215,7 @@ public class HdfsWriterTask extends WriterTask {
     }
 
     public void close(){
+        System.out.println("hdfs writer 结束");
         try {
             fs.close();
         } catch (IOException e) {

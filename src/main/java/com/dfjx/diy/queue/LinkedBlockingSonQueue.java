@@ -1,6 +1,7 @@
 package com.dfjx.diy.queue;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author wayne
@@ -14,8 +15,8 @@ public class LinkedBlockingSonQueue<E> extends LinkedBlockingQueue<E>
         super(capacity);
     }
 
-    public E takeOne() throws InterruptedException {
-        return take();
+    public E takeOne(long timeout, TimeUnit unit) throws InterruptedException {
+        return poll(timeout, unit);
     }
 
     public void putOne(E e) throws InterruptedException {

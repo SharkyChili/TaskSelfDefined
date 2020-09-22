@@ -10,16 +10,6 @@ import com.dfjx.diy.sync.writer.WriterTask;
 
 public abstract class ReaderTask extends Task {
 
-    public volatile boolean isRunning = true;
-
-    public void stop(){
-        isRunning = false;
-    }
-
-    public void interruptWriter(){
-        this.sync.writerThread.interrupt();
-    }
-
     abstract Object produce();
 
     abstract Object[] produceBatch();
@@ -28,13 +18,13 @@ public abstract class ReaderTask extends Task {
         //正常流程，走到produce为空时，自动结束
         //中断流程
         //被中断，就应该停止生产，并通知writer结束
-        while(isRunning) {
+        while(this.sync.isRunning.get()) {
             if(queue instanceof ProduceOne){
                 try {
                     Object object = produce();
                     if(object==null){
                         //正常结束，用于结束线程
-                        isRunning = false;
+                        this.sync.isRunning.set(false);
                         System.out.println("reader正常结束");
                     } else {
                         ((ProduceOne)queue).putOne(object);
@@ -42,7 +32,7 @@ public abstract class ReaderTask extends Task {
                 } catch (InterruptedException e) {
                     //clear interrupt flag
                     //被中断，就该停止生产
-                    isRunning = false;
+                    this.sync.isRunning.set(false);
                     System.out.println("reader中断结束");
                 }
             }else if(queue instanceof ProduceBatch){
@@ -50,7 +40,7 @@ public abstract class ReaderTask extends Task {
                     Object[] objects = produceBatch();
                     if(objects==null) {
                         //正常结束，用于结束线程
-                        isRunning = false;
+                        this.sync.isRunning.set(false);
                         System.out.println("reader正常结束");
                     } else {
                         ((ProduceBatch)queue).putAll(objects);
@@ -58,7 +48,7 @@ public abstract class ReaderTask extends Task {
                 } catch (InterruptedException e) {
                     //clear interrupt flag
                     //被中断，就该停止生产
-                    isRunning = false;
+                    this.sync.isRunning.set(false);
                     System.out.println("reader中断结束");
                 }
             }else {
@@ -67,7 +57,6 @@ public abstract class ReaderTask extends Task {
         }
         //reader结束
         close();
-        //通知writer结束
-        interruptWriter();
+        //通知writer结束  this.sync.isRunning.set(false);已经做到了
     }
 }

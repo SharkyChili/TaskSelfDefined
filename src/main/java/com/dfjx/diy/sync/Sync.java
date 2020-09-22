@@ -11,9 +11,11 @@ import com.dfjx.diy.sync.writer.HdfsWriterTask;
 import com.dfjx.diy.sync.writer.WriterTask;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Sync {
     public BlockingQueue<Object> queue;
+    public final AtomicBoolean isRunning = new AtomicBoolean(true);
 
     public ReaderTask readerTask;
     public WriterTask writerTask;
@@ -59,7 +61,7 @@ public class Sync {
     }
 
     public void stop(){
-        this.readerTask.stop();
+        this.isRunning.set(false);
     }
 
     private BlockingQueue<Object> determineQueue(Conf conf){

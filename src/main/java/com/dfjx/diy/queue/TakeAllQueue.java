@@ -1392,6 +1392,23 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         put(e);
     }
 
+    @Override
+    public Object[] takeAll(long timeout, TimeUnit unit) throws InterruptedException {
+        long nanos = unit.toNanos(timeout);
+        final ReentrantLock lock = this.lock;
+        lock.lockInterruptibly();
+        try {
+            while (count==0){
+                if (nanos <= 0)
+                    return null;
+                nanos = notEmpty.awaitNanos(nanos);
+            }
+            return dequeueAll();
+        }finally {
+            lock.unlock();
+        }
+    }
+
 
 
     public Object[] takeAll() throws InterruptedException {
