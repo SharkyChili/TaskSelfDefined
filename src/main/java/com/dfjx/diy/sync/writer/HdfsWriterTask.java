@@ -50,7 +50,9 @@ public class HdfsWriterTask extends WriterTask {
 
         String path = hdfsWriterParam.path;
         String dataFile = createDataFile(path);
+        System.out.println("hdfs consume: createDataFile:dataFile :"+dataFile);
         printDataToDisk(jsonObjectList,dataFile);
+        System.out.println("hdfs consume: printDataToDisk success");
 
         URI uri = null;
         try {
@@ -83,6 +85,7 @@ public class HdfsWriterTask extends WriterTask {
             UserGroupInformation.loginUserFromSubject(null);
             syncDataToHdfsForCtsdb(dataFile, dataFile,
                     uri,conf);
+            System.out.println("hdfs consume: syncDataToHdfsForCtsdb success");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }catch (Exception e){

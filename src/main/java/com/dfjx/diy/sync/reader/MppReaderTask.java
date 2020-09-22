@@ -64,14 +64,17 @@ public class MppReaderTask extends ReaderTask{
                     Object col = rs.getObject(i);
                     jsonObject.put(key,col);
                 }
+                System.out.println("mpp produce:" + jsonObject.toJSONString());
                 return jsonObject;
             }else {
+                System.out.println("mpp produce: 无更多数据，结束");
                 close();
+                return null;
             }
         } catch (SQLException e) {
+            System.out.println("mpp produce: 异常："+e.getMessage());
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
