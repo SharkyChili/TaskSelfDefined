@@ -68,7 +68,7 @@ public class HdfsWriterTask extends WriterTask {
         try {
             UserGroupInformation.loginUserFromSubject(null);
 
-            System.out.println("hdfs consume: syncDataToHdfsForCtsdb success");
+            System.out.println("hdfs consume: conf success");
         } catch (IOException e) {
             System.out.println("HdfsWriterTask IOException");
             throw new RuntimeException(e);
