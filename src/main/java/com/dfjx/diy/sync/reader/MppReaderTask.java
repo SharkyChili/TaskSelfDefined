@@ -16,7 +16,7 @@ public class MppReaderTask extends ReaderTask{
     @Override
     public void init(Param param, BlockingQueue<Object> queue, Sync sync) {
         super.init(param, queue, sync);
-        this.param = param;
+//        this.param = param;
 
         MppReaderParam mppReaderParam = (MppReaderParam) this.param;
 /*        String driver = "org.postgresql.Driver";
