@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <conf>
     <source>
-        <mpp>
-            <url>jdbc:postgresql://172.19.1.49:7300/dwtmppdb</url>
-            <username>dwt</username>
-            <password>123456</password>
-            <sql>select * from dwttab where id='1';</sql>
-        </mpp>
-    </source>
-    <target>
         <hdfs>
             <url>hdfs://172.19.1.14:8020</url>
             <secureid>0Hr0is06in4hxBu2V6vU0DAMFw7BT50pC4V5</secureid>
             <username>wayne</username>
             <securekey>ItWu35remPNQFYhe4Szr58Id2PVbg7cM</securekey>
-            <path>/user/dwt</path>
+            <path>/user/dwt/</path>
+            <filename>a.txt</filename>
         </hdfs>
+    </source>
+    <target>
+        <mpp>
+            <url>jdbc:postgresql://172.19.1.49:7300/dwtmppdb</url>
+            <username>dwt</username>
+            <password>123456</password>
+            <tablename>dwttab</tablename>
+            <fields>ID,DEPT,EMP_ID</fields>
+        </mpp>
     </target>
 </conf>
 
