@@ -48,11 +48,18 @@ public class MppWriterTask extends WriterTask {
 
         try {
             ps = conn.prepareStatement(sql);
+//            System.out.println("sql: "+ sql);
             System.out.println(Thread.currentThread().getName() + " : " + "mpp拿到PreparedStatement成功");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     };
+
+//    public static void main(String[] args) {
+//        String dwttab = new MppWriterTask().buildSql("dwttab", "ID,DEPT,EMP_ID");
+//        System.out.println(dwttab);
+//    }
+
 
     private String buildSql(String tablename, String fields){
 //        String sql = "insert into wayne(a, b, c) values(?, ?, ?);";
@@ -61,7 +68,7 @@ public class MppWriterTask extends WriterTask {
                 .map(str -> "?")
                 .collect(Collectors.joining(", "));
 
-        String sql = "\"insert into " +
+        String sql = "insert into " +
                 tablename + "(" +
                 fields + ")" +
                 " values(" +
@@ -76,10 +83,15 @@ public class MppWriterTask extends WriterTask {
     void consume(Object object) {
         try {
             JSONObject jsonObject = (JSONObject) object;
-            String[] values = fieldList.stream().map(
-                    field -> jsonObject.getString(underlineToCamel(field))
-            ).toArray(String[]::new);
-            ps.execute(sql,values);
+            System.out.println(jsonObject.toJSONString());
+            for (int i = 0; i < fieldList.size(); i++) {
+                Object value = jsonObject.get(underlineToCamel(fieldList.get(i)));
+                System.out.println("ps.setObject");
+                System.out.println(i+1 + " : " + underlineToCamel(fieldList.get(i)) + " : " + value);
+                ps.setObject(i+1, value);
+            }
+            ps.executeUpdate();
+            System.out.println(Thread.currentThread().getName() + "mpp写入成功 " + jsonObject.toJSONString());
         } catch (SQLException e) {
             e.printStackTrace();
         }

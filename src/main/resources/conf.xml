@@ -16,7 +16,7 @@
             <username>dwt</username>
             <password>123456</password>
             <tablename>dwttab</tablename>
-            <fields>ID,DEPT,EMP_ID</fields>
+            <fields>DEPT,EMP_ID</fields>
         </mpp>
     </target>
 </conf>
