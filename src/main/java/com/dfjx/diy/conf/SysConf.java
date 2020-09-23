@@ -54,6 +54,7 @@ public class SysConf extends Conf{
 //        params.put("target.hdfs.secureid","0Hr0is06in4hxBu2V6vU0DAMFw7BT50pC4V5");
 //        params.put("target.hdfs.username","wayne");
 //        params.put("target.hdfs.securekey","ItWu35remPNQFYhe4Szr58Id2PVbg7cM");
+//        params.put("target.hdfs.path","/b_");
 //
 //        SysConf sysConf = SysConf.create().buildConfFromSysParams(params);
 //        System.out.println("a");
