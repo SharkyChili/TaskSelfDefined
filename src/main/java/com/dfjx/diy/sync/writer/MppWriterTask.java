@@ -5,14 +5,12 @@ import com.dfjx.diy.param.Param;
 import com.dfjx.diy.param.writer.MppWriterParam;
 import com.dfjx.diy.sync.Sync;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MppWriterTask extends WriterTask {
     PreparedStatement ps;
@@ -32,7 +30,8 @@ public class MppWriterTask extends WriterTask {
         String tablename = mppWriterParam.tablename;
         String fields = mppWriterParam.fields;
 
-
+        fieldList = Stream.of(fields.split("\\,"))
+                .collect(Collectors.toList());
 
         conn = null;
         try {
@@ -49,16 +48,26 @@ public class MppWriterTask extends WriterTask {
 
         try {
             ps = conn.prepareStatement(sql);
-            System.out.println(Thread.currentThread().getName() + " : " + "mpp执行语句，拿到rs成功");
+            System.out.println(Thread.currentThread().getName() + " : " + "mpp拿到PreparedStatement成功");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     };
 
     private String buildSql(String tablename, String fields){
-        //todo
-        return null;
+//        String sql = "insert into wayne(a, b, c) values(?, ?, ?);";
+        String[] strings = fields.split("\\,");
+        String locations = Stream.of(fields.split("\\,"))
+                .map(str -> "?")
+                .collect(Collectors.joining(", "));
 
+        String sql = "\"insert into " +
+                tablename + "(" +
+                fields + ")" +
+                " values(" +
+                locations +
+                ");";
+        return sql;
     }
 
 
@@ -68,7 +77,7 @@ public class MppWriterTask extends WriterTask {
         try {
             JSONObject jsonObject = (JSONObject) object;
             String[] values = fieldList.stream().map(
-                    field -> jsonObject.getString(field)
+                    field -> jsonObject.getString(underlineToCamel(field))
             ).toArray(String[]::new);
             ps.execute(sql,values);
         } catch (SQLException e) {
@@ -94,5 +103,25 @@ public class MppWriterTask extends WriterTask {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private String underlineToCamel(String param){
+        if(param == null || "".equals(param)){
+            return "";
+        }
+        String temp = param.toLowerCase();
+        int len = temp.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = temp.charAt(i);
+            if('_' == c){
+                if(++i < len){
+                    sb.append(Character.toUpperCase(temp.charAt(i)));
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 }
