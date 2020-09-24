@@ -56,7 +56,7 @@ public class MppWriterTask extends WriterTask {
     };
 
 //    public static void main(String[] args) {
-//        String dwttab = new MppWriterTask().buildSql("dwttab", "ID,DEPT,EMP_ID");
+//        String dwttab = new MppWriterTask().buildSql("dwttab", "dept,emp_id");
 //        System.out.println(dwttab);
 //    }
 
