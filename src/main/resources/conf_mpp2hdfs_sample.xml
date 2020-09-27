@@ -5,7 +5,7 @@
             <url>jdbc:postgresql://172.19.1.49:7300/dwtmppdb</url>
             <username>dwt</username>
             <password>123456</password>
-            <sql>select * from dwttab where id='1';</sql>
+            <sql>select * from dwttab;</sql>
         </mpp>
     </source>
     <target>
