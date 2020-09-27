@@ -95,6 +95,7 @@ public class HdfsWriterTask extends WriterTask {
 
     @Override
     void consumeBatch(Object[] objects) {
+        //System.out.println(Thread.currentThread().getName() + " : " + "hdfs consume: Object[] objects size: "+objects.length);
         //这里需要适配MppHdfsHandler来转换类型，暂时不适配,写死
         List<JSONObject> jsonObjectList = new ArrayList<>();
         for (Object object : objects) {

@@ -102,6 +102,7 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         //提升效率，只在放满时触发takeAll()
         //takeAll()还在生产者生产完时触发
         if(count == this.items.length){
+            //System.out.println(Thread.currentThread().getName() + " : " + "     ///////////notEmpty.signal();");
             notEmpty.signal();
         }
     }
@@ -1398,6 +1399,8 @@ public class TakeAllQueue<E> extends AbstractQueue<E>
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
+            //依赖这一条：
+            //刚刚释放锁的线程再去抢锁     和     过了段时间再来抢锁的线程，  这两者竞争，前者会得到锁
             while (count==0){
                 if (nanos <= 0)
                     return null;

@@ -68,7 +68,7 @@ public class Sync {
         if(conf.getReaderParam().getClass().getSimpleName().contains("Mpp")
         && conf.getWriterParam().getClass().getSimpleName().contains("Hdfs")){
             //非公平锁，这样才有one--batch的意义
-            return new TakeAllQueue<Object>(50);
+            return new TakeAllQueue<Object>(100);
         }
         return new LinkedBlockingSonQueue<Object>(50);
     }
