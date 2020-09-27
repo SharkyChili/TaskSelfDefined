@@ -104,6 +104,7 @@ public class MppWriterTask extends WriterTask {
 
     @Override
     public void close() {
+        System.out.println(Thread.currentThread().getName() + "mpp关闭连接 ");
         try {
             if(ps!=null){ps.close();}
         } catch (SQLException e) {
