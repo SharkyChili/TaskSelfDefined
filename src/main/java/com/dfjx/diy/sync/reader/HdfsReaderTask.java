@@ -100,6 +100,7 @@ public class HdfsReaderTask extends ReaderTask {
         try {
             if((line=bufferedReader.readLine())!=null){
                 JSONObject jsonObject = JSONObject.parseObject(line);
+                System.out.println(Thread.currentThread().getName() + " : " + "hdfs produce:" + jsonObject.toJSONString());
                 return jsonObject;
             }
         } catch (IOException e) {
